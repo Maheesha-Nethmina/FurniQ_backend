@@ -12,10 +12,10 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:5173") // front end url
+                registry.addMapping("/")
+                        .allowedOrigins("http://localhost:5173") // frontend project url
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
+                        .allowedHeaders(" ")
                         .allowCredentials(true);
             }
         };
