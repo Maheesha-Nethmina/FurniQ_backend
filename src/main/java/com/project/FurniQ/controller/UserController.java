@@ -20,11 +20,22 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
+        // 1. Register the user (hashes password, sets role "USER")
         User savedUser = userService.register(user);
+
+        // --- THIS IS THE NEW PART ---
+        // 2. Generate a token for the new user immediately
+        String token = jwtService.generateToken(savedUser.getEmail(), savedUser.getRole());
+
+        // 3. Return the full login response, just like the /login endpoint
         return ResponseEntity.ok(Map.of(
-                "message", "User registered successfully",
-                "email", savedUser.getEmail()
+                "token", token,
+                "role", savedUser.getRole(),
+                "email", savedUser.getEmail(),
+                "username", savedUser.getUsername(),
+                "message","Registration successful!"
         ));
+        // --- END OF MODIFICATION ---
     }
 
     @PostMapping("/login")
@@ -37,12 +48,14 @@ public class UserController {
             return ResponseEntity.status(401).body(Map.of("error", "Invalid email or password"));
         }
 
-        String token = jwtService.generateToken(email, userOpt.get().getRole());
+        User user = userOpt.get();
+        String token = jwtService.generateToken(user.getEmail(), user.getRole());
 
         return ResponseEntity.ok(Map.of(
                 "token", token,
-                "role", userOpt.get().getRole(),
-                "email", userOpt.get().getEmail(),
+                "role", user.getRole(),
+                "email", user.getEmail(),
+                "username", user.getUsername(),
                 "message","User successfully logged in"
         ));
     }
