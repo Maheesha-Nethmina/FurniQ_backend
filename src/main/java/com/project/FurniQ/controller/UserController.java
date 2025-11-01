@@ -1,12 +1,17 @@
 package com.project.FurniQ.controller;
 
+import com.project.FurniQ.dto.ResponseDTO;
+import com.project.FurniQ.dto.userDTO;
 import com.project.FurniQ.entity.User;
 import com.project.FurniQ.service.JwtService;
 import com.project.FurniQ.service.UserService;
+import com.project.FurniQ.util.VarList;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -17,17 +22,15 @@ public class UserController {
 
     private final UserService userService;
     private final JwtService jwtService;
+    private final ResponseDTO responseDTO;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
-        // 1. Register the user (hashes password, sets role "USER")
+
         User savedUser = userService.register(user);
 
-        // --- THIS IS THE NEW PART ---
-        // 2. Generate a token for the new user immediately
         String token = jwtService.generateToken(savedUser.getEmail(), savedUser.getRole());
 
-        // 3. Return the full login response, just like the /login endpoint
         return ResponseEntity.ok(Map.of(
                 "token", token,
                 "role", savedUser.getRole(),
@@ -35,7 +38,7 @@ public class UserController {
                 "username", savedUser.getUsername(),
                 "message","Registration successful!"
         ));
-        // --- END OF MODIFICATION ---
+
     }
 
     @PostMapping("/login")
@@ -59,4 +62,49 @@ public class UserController {
                 "message","User successfully logged in"
         ));
     }
+    @GetMapping("/getAllUsers")
+    public ResponseEntity getAllUsers() {
+        try{
+            List<userDTO> userDTOList = userService.getAllUsers();
+            responseDTO.setCode(VarList.RSP_SUCCESS);
+            responseDTO.setMessage("Success");
+            responseDTO.setContent(userDTOList);
+            return new ResponseEntity(responseDTO, HttpStatus.ACCEPTED);
+        } catch (Exception ex) {
+            responseDTO.setCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(ex.getMessage());
+            responseDTO.setContent(null);
+            return new ResponseEntity(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+    }
+
+    @PutMapping("/updateUserDetails")
+    public ResponseEntity updateUserDetails(@RequestBody userDTO userDTO) {
+        try{
+            String res =  userService.updateUserDetails(userDTO);
+            if(res.equals("00")){
+                responseDTO.setCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Success");
+                responseDTO.setContent(userDTO);
+                return new ResponseEntity(responseDTO, HttpStatus.ACCEPTED);
+            } else if (res.equals("01")) {
+                responseDTO.setCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("User Not Found");
+                responseDTO.setContent(userDTO);
+                return new ResponseEntity(responseDTO, HttpStatus.BAD_REQUEST);
+            }else {
+                responseDTO.setCode(VarList.RSP_ERROR);
+                responseDTO.setMessage("Error");
+                responseDTO.setContent(userDTO);
+                return new ResponseEntity(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } catch (Exception ex) {
+            responseDTO.setCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(ex.getMessage());
+            responseDTO.setContent(null);
+            return new ResponseEntity(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
