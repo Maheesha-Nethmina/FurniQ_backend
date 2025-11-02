@@ -44,7 +44,6 @@ public class UserService implements UserDetailsService {
         try {
             emailService.sendWelcomeEmail(savedUser.getEmail(), savedUser.getUsername());
         } catch (Exception e) {
-            // Log if the email dispatch fails (but don't stop the registration)
             System.err.println("Email service failed to dispatch: " + e.getMessage());
         }
 
@@ -55,6 +54,11 @@ public class UserService implements UserDetailsService {
 
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+
+    public Optional<User> findById(Integer id) {
+        return userRepository.findById(id);
     }
 
     public boolean checkPassword(String raw, String encoded) {

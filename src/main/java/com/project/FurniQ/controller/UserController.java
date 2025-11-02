@@ -1,8 +1,10 @@
 package com.project.FurniQ.controller;
 
+import com.project.FurniQ.dto.EmailRequestDTO; // <-- IMPORT NEW DTO
 import com.project.FurniQ.dto.ResponseDTO;
 import com.project.FurniQ.dto.userDTO;
 import com.project.FurniQ.entity.User;
+import com.project.FurniQ.service.EmailService; // <-- IMPORT EMAIL SERVICE
 import com.project.FurniQ.service.JwtService;
 import com.project.FurniQ.service.UserService;
 import com.project.FurniQ.util.VarList;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -23,6 +26,10 @@ public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
     private final ResponseDTO responseDTO;
+
+    // --- ADD THIS INJECTION ---
+    private final EmailService emailService;
+    // --- END ---
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
@@ -62,6 +69,34 @@ public class UserController {
                 "message","User successfully logged in"
         ));
     }
+
+
+    @PostMapping("/sendEmail")
+    public ResponseEntity<?> sendEmailToUser(@RequestBody EmailRequestDTO emailRequest) {
+//        find user
+        Optional<User> userOpt = userService.findById(emailRequest.getUserId());
+
+
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "User not found with ID: " + emailRequest.getUserId()));
+        }
+
+        User user = userOpt.get();
+
+        // Send the email
+        emailService.sendCustomEmail(
+                user.getEmail(),
+                emailRequest.getSubject(),
+                emailRequest.getMessageBody()
+        );
+
+        // Return  success response
+        return ResponseEntity.ok(Map.of(
+                "message", "Email successfully dispatched to " + user.getEmail()
+        ));
+    }
+
     @GetMapping("/getAllUsers")
     public ResponseEntity getAllUsers() {
         try{

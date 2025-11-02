@@ -25,8 +25,12 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
                         .requestMatchers("/api/admin/").hasRole("ADMIN")
                         .requestMatchers("/api/user/").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/api/auth/getAllUsers").hasRole("ADMIN")
-                        .requestMatchers("/api/auth/updateUserDetails").hasRole("ADMIN")
+                        .requestMatchers("/api/auth/getAllUsers").permitAll() //need to change for admin
+                        .requestMatchers("/api/auth/updateUserDetails").permitAll()//need to change for admin
+
+                        .requestMatchers("/api/auth/sendEmail").permitAll()//need to change for admin
+
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
