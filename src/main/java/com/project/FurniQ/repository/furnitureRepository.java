@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface furnitureRepository extends JpaRepository<Furniture, Integer> {
     Optional<Furniture> findById(Integer id);
-    List<Furniture> findByName(String name);
+    List<Furniture> findByFurnitureName(String furnitureName);
 }
