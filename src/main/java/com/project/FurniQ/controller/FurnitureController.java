@@ -105,4 +105,52 @@ public ResponseEntity getAllFurnitures() {
 
 }
 
+@GetMapping(value = "/getFurnitureById")
+    public ResponseEntity getFurnitureById(@RequestParam int id) {
+        try{
+        FurnitureDTO furnitureDTO = furnitureService.getFurnitureById(id);
+            if(furnitureDTO != null){
+                responseDTO.setCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Successfully retrieved furniture");
+                responseDTO.setContent(furnitureDTO);
+                return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+            }else{
+                responseDTO.setCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("No Furniture found");
+                responseDTO.setContent(null);
+                return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+        } catch (Exception ex) {
+            responseDTO.setCode(VarList.RSP_ERROR);
+            responseDTO.setMessage("Error ocurred");
+            responseDTO.setContent(null);
+            return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+}
+
+@DeleteMapping(value = "deleteFurniture")
+public ResponseEntity DeleteFurniture(@RequestParam int id) {
+        try{
+           String res = furnitureService.DeleteFurniture(id);
+           if(res.equals("00")){
+               responseDTO.setCode(VarList.RSP_SUCCESS);
+               responseDTO.setMessage("Successfully deleted");
+               responseDTO.setContent(null);
+               return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+           }else{
+               responseDTO.setCode(VarList.RSP_NO_DATA_FOUND);
+               responseDTO.setMessage("No Furniture found");
+               responseDTO.setContent(null);
+               return new ResponseEntity<>(responseDTO, HttpStatus.BAD_REQUEST);
+           }
+        } catch (Exception ex) {
+            responseDTO.setCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(ex.getMessage());
+            responseDTO.setContent(null);
+            return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+}
+
 }

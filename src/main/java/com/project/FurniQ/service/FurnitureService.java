@@ -46,7 +46,27 @@ public class FurnitureService {
         return modelMapper.map(furnitureList, listType);
     }
 
-    //remove the furnitures
+    //search furniture
+    public FurnitureDTO getFurnitureById(Integer id){
+        if(furnitureRepository.existsById(id)){
+            Furniture furniture = furnitureRepository.findById(id).orElse(null);
+            return modelMapper.map(furniture, FurnitureDTO.class);
+        }
+        else {
+            return null;
+        }
+    }
+
+    //delete furniture
+    public String DeleteFurniture(Integer id){
+        if(furnitureRepository.existsById(id)){
+            furnitureRepository.deleteById(id);
+            return VarList.RSP_SUCCESS;
+        }else{
+            return VarList.RSP_NO_DATA_FOUND;
+        }
+    }
+
 
 
 }
