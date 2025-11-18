@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v2/furniture")
+@RequestMapping("api/v1/furniture")
 public class FurnitureController {
 
-@Autowired
-private FurnitureService furnitureService;
+    @Autowired
+    private FurnitureService furnitureService;
     @Autowired
     private ResponseDTO responseDTO;
 
@@ -106,7 +106,7 @@ public ResponseEntity getAllFurnitures() {
 }
 
 @GetMapping(value = "/getFurnitureById")
-    public ResponseEntity getFurnitureById(@RequestParam int id) {
+    public ResponseEntity getFurnitureById(@RequestParam Integer id) {
         try{
         FurnitureDTO furnitureDTO = furnitureService.getFurnitureById(id);
             if(furnitureDTO != null){
@@ -131,7 +131,7 @@ public ResponseEntity getAllFurnitures() {
 }
 
 @DeleteMapping(value = "deleteFurniture")
-public ResponseEntity DeleteFurniture(@RequestParam int id) {
+public ResponseEntity DeleteFurniture(@RequestParam Integer id) {
         try{
            String res = furnitureService.DeleteFurniture(id);
            if(res.equals("00")){
