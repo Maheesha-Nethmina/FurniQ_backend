@@ -25,7 +25,7 @@ public class FurnitureController {
 
     @PostMapping(value = "/saveNewfurniture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDTO> saveNewfurniture(
-            @RequestPart("file") MultipartFile file,
+            @RequestPart(value = "file", required = false) MultipartFile file,
             @RequestPart("data") String furnitureData) {
 
         ResponseDTO responseDTO = new ResponseDTO();

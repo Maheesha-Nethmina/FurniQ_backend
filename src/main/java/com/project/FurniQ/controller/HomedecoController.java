@@ -24,7 +24,7 @@ public class HomedecoController {
 
     @PostMapping(value = "/saveHomedeco", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDTO> saveHomedeco(
-            @RequestPart("file") MultipartFile file,
+            @RequestPart(value = "file", required = false) MultipartFile file,
             @RequestPart("data") String homedecoData
     ) {
         ResponseDTO responseDTO = new ResponseDTO();
