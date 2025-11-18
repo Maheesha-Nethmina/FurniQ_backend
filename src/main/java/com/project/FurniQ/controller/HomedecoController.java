@@ -1,13 +1,16 @@
 package com.project.FurniQ.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.FurniQ.dto.HomedecoDTO;
 import com.project.FurniQ.dto.ResponseDTO;
 import com.project.FurniQ.service.HomedecoService;
 import com.project.FurniQ.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,22 +19,26 @@ import java.util.List;
 @CrossOrigin
 public class HomedecoController {
 
-
     @Autowired
     private HomedecoService homedecoService;
 
-    @PostMapping(value = "/saveHomedeco")
-    public ResponseEntity<ResponseDTO> saveHomedeco(@RequestBody HomedecoDTO homedecoDTO) {
-
+    @PostMapping(value = "/saveHomedeco", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDTO> saveHomedeco(
+            @RequestPart("file") MultipartFile file,
+            @RequestPart("data") String homedecoData
+    ) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            String res = homedecoService.saveNewDeco(homedecoDTO);
+            ObjectMapper objectMapper = new ObjectMapper();
+            HomedecoDTO homedecoDTO = objectMapper.readValue(homedecoData, HomedecoDTO.class);
+            String res = homedecoService.saveNewDeco(homedecoDTO, file);
+
             if (res.equals(VarList.RSP_SUCCESS)) {
                 responseDTO.setCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Success");
                 responseDTO.setContent(homedecoDTO);
                 return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
-            } else if (res.equals(VarList.RSP_DUPLICATED)) { // Assuming "01"
+            } else if (res.equals(VarList.RSP_DUPLICATED)) {
                 responseDTO.setCode(VarList.RSP_FAIL);
                 responseDTO.setMessage("Home Deco already exists");
                 responseDTO.setContent(homedecoDTO);
@@ -44,7 +51,7 @@ public class HomedecoController {
             }
         } catch (Exception ex) {
             responseDTO.setCode(VarList.RSP_FAIL);
-            responseDTO.setMessage("Error: ");
+            responseDTO.setMessage("Error: " + ex.getMessage());
             responseDTO.setContent(null);
             return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
         }

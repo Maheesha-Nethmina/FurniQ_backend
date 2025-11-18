@@ -1,5 +1,7 @@
 package com.project.FurniQ.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.project.FurniQ.dto.HomedecoDTO;
 import com.project.FurniQ.entity.HomeDeco;
 import com.project.FurniQ.repository.homedecoRepository;
@@ -9,9 +11,12 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -21,19 +26,28 @@ public class HomedecoService {
     private final homedecoRepository homedecoRepository;
     private final ModelMapper modelMapper;
 
-    // Save new Homedeco
-    public String saveNewDeco(HomedecoDTO homedecoDTO) {
-        List<HomeDeco> existing = homedecoRepository.findByDecoName(homedecoDTO.getDecoName());
+    private final Cloudinary cloudinary;
+    //save new deco item
+    public String saveNewDeco(HomedecoDTO homedecoDTO, MultipartFile file) {
 
+        List<HomeDeco> existing = homedecoRepository.findByDecoName(homedecoDTO.getDecoName());
         if (!existing.isEmpty()) {
             return VarList.RSP_DUPLICATED;
         }
 
+        try {
+            if (file != null && !file.isEmpty()) {
+                Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+                homedecoDTO.setDecoPicture(uploadResult.get("url").toString());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return VarList.RSP_FAIL;
+        }
         homedecoRepository.save(modelMapper.map(homedecoDTO, HomeDeco.class));
         return VarList.RSP_SUCCESS;
     }
-
-    // Update saved deco items
+    //update deco item
     public String updateDeco(HomedecoDTO homedecoDTO) {
         if(homedecoRepository.existsById(homedecoDTO.getId())) {
             homedecoRepository.save(modelMapper.map(homedecoDTO, HomeDeco.class));
@@ -42,15 +56,14 @@ public class HomedecoService {
             return VarList.RSP_NO_DATA_FOUND;
         }
     }
-
-    // Get all
+    //get All deco items
     public List<HomedecoDTO> getAllHomedeco() {
         List<HomeDeco> homedecoList = homedecoRepository.findAll();
         Type listType = new TypeToken<List<HomedecoDTO>>() {}.getType();
         return modelMapper.map(homedecoList, listType);
     }
 
-    // Search by ID
+    //get deco item using id
     public HomedecoDTO getHomedecoById(Integer id) {
         if(homedecoRepository.existsById(id)) {
             HomeDeco homeDeco = homedecoRepository.findById(id).get();
@@ -59,8 +72,7 @@ public class HomedecoService {
             return null;
         }
     }
-
-    // Delete
+    //remove listed deco item
     public String deleteHomedeco(Integer id) {
         if(homedecoRepository.existsById(id)) {
             homedecoRepository.deleteById(id);

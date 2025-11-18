@@ -6,15 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.net.URL;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Table(name= "furniture")
 @Builder
-
 public class Furniture {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +22,5 @@ public class Furniture {
     private String furniturePrice;
     private String furnitureSize;
     private Integer quantity;
-    private URL furniturePicture;
-
+    private String furniturePicture;
 }

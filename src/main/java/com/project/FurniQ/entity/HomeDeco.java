@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.net.URL;
 
 @Entity
 @Data
@@ -13,7 +12,6 @@ import java.net.URL;
 @NoArgsConstructor
 @Table(name = "homedeco")
 @Builder
-
 public class HomeDeco {
 
     @Id
@@ -24,5 +22,5 @@ public class HomeDeco {
     private String decoPrice;
     private String decoSize;
     private Integer quantity;
-    private URL decoPicture;
+    private String decoPicture;
 }
