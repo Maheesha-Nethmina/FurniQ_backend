@@ -18,9 +18,11 @@ public class HomeDeco {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String decoName;
+    @Column(columnDefinition = "TEXT")
     private String decoDetails;
     private String decoPrice;
     private String decoSize;
     private Integer quantity;
+    @Column(length = 1024)
     private String decoPicture;
 }

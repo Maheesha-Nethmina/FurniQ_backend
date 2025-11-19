@@ -17,10 +17,12 @@ public class Furniture {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String furnitureName;
+    @Column(columnDefinition = "TEXT")
     private String furnitureDetails;
     private String furnitureType;
     private String furniturePrice;
     private String furnitureSize;
     private Integer quantity;
+    @Column(length = 1024)
     private String furniturePicture;
 }
