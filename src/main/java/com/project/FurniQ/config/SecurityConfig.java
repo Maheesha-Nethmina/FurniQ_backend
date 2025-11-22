@@ -31,18 +31,18 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN") // Best practice: use /** for all sub-paths
-                        .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN") // Best practice: use /** for all sub-paths
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
 
                         // Allowing Furniture/Homedeco endpoints for public access (as per your current setup)
                         .requestMatchers("/api/v1/furniture/**").permitAll() // FIXED: Allows all requests to /api/v1/furniture/...
                         .requestMatchers("/api/v1/homedeco/**").permitAll() // FIXED: Allows all requests to /api/v1/homedeco/...
 
                         // Keeping other permitAll requests
-                        .requestMatchers("/api/auth/getAllUsers").permitAll()
-                        .requestMatchers("/api/auth/updateUserDetails").permitAll()
-                        .requestMatchers("/api/auth/sendEmail").permitAll()
+                        .requestMatchers("/api/v1/auth/getAllUsers").permitAll()
+                        .requestMatchers("/api/v1/auth/updateUserDetails").permitAll()
+                        .requestMatchers("/api/v1/auth/sendEmail").permitAll()
 
                         .anyRequest().authenticated()
                 )

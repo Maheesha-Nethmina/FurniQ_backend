@@ -1,10 +1,10 @@
 package com.project.FurniQ.controller;
 
-import com.project.FurniQ.dto.EmailRequestDTO; // <-- IMPORT NEW DTO
+import com.project.FurniQ.dto.EmailRequestDTO;
 import com.project.FurniQ.dto.ResponseDTO;
 import com.project.FurniQ.dto.userDTO;
 import com.project.FurniQ.entity.User;
-import com.project.FurniQ.service.EmailService; // <-- IMPORT EMAIL SERVICE
+import com.project.FurniQ.service.EmailService;
 import com.project.FurniQ.service.JwtService;
 import com.project.FurniQ.service.UserService;
 import com.project.FurniQ.util.VarList;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class UserController {
