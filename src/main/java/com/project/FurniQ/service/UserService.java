@@ -32,19 +32,33 @@ public class UserService implements UserDetailsService {
 
     //user registration
     public User register(User user) {
+        // 1. Check if user already exists
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Email already in use");
+            throw new RuntimeException("User with this email already exists");
         }
 
+        // 2. Encrypt Password & Set Role
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole("USER");
+        if (user.getRole() == null || user.getRole().isEmpty()) {
+            user.setRole("USER");
+        }
 
+        // 3. Save to Database
         User savedUser = userRepository.save(user);
 
+        // 4. Send Email (Wrapped in Try-Catch)
+        // This prevents the app from crashing if the internet blocks the email port
         try {
-            emailService.sendWelcomeEmail(savedUser.getEmail(), savedUser.getUsername());
+            emailService.sendCustomEmail(
+                    savedUser.getEmail(),
+                    "Welcome to FurniQ",
+                    "Your account has been created successfully!"
+            );
         } catch (Exception e) {
-            System.err.println("Email service failed to dispatch: " + e.getMessage());
+            // Log the error but DO NOT stop the registration process
+            System.out.println("⚠️ WARNING: Email could not be sent due to network restriction.");
+            System.out.println("👉 Error: " + e.getMessage());
+            System.out.println("✅ User registered successfully anyway.");
         }
 
         return savedUser;
