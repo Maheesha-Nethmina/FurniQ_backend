@@ -1,11 +1,15 @@
 package com.project.FurniQ.controller;
 
-
+import com.project.FurniQ.dto.OderDTO;
+import com.project.FurniQ.dto.ResponseDTO;
 import com.project.FurniQ.service.OderService;
+import com.project.FurniQ.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -15,5 +19,99 @@ public class OderController {
     @Autowired
     private OderService orderService;
 
+    @Autowired
+    private ResponseDTO responseDTO;
 
+    // SaveNew  Order
+    @PostMapping(value = "/saveNewOrder")
+    public ResponseEntity<ResponseDTO> saveNewOrder(@RequestBody OderDTO oderDTO) {
+        try {
+            String res = orderService.saveNewOrder(oderDTO);
+
+            if (res.equals(VarList.RSP_SUCCESS)) {
+                responseDTO.setCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Successfully placed new order");
+                responseDTO.setContent(oderDTO);
+                return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+
+            } else {
+                responseDTO.setCode(VarList.RSP_FAIL);
+                responseDTO.setMessage("Failed to place order (User may not exist)");
+                responseDTO.setContent(null);
+                return new ResponseEntity<>(responseDTO, HttpStatus.BAD_REQUEST);
+            }
+
+        } catch (Exception ex) {
+            responseDTO.setCode(VarList.RSP_ERROR);
+            responseDTO.setMessage("Error");
+            responseDTO.setContent(null);
+            return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Get All Orders
+    @GetMapping(value = "/getAllOrders")
+    public ResponseEntity<ResponseDTO> getAllOrders() {
+        try {
+            List<OderDTO> orderList = orderService.getAllOrders();
+            responseDTO.setCode(VarList.RSP_SUCCESS);
+            responseDTO.setMessage("Successfully fetched all orders");
+            responseDTO.setContent(orderList);
+            return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+
+        } catch (Exception ex) {
+            responseDTO.setCode(VarList.RSP_ERROR);
+            responseDTO.setMessage("Error");
+            responseDTO.setContent(null);
+            return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Delete Order (Cancel)
+    @DeleteMapping(value = "/deleteOrder/{orderId}")
+    public ResponseEntity<ResponseDTO> deleteOrder(@PathVariable Integer orderId) {
+        try {
+            String res = orderService.deleteOrder(orderId);
+            if (res.equals(VarList.RSP_SUCCESS)) {
+                responseDTO.setCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Order cancelled and email sent successfully");
+                responseDTO.setContent(null);
+                return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+            } else {
+                responseDTO.setCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("Order ID not found");
+                responseDTO.setContent(null);
+                return new ResponseEntity<>(responseDTO, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception ex) {
+            responseDTO.setCode(VarList.RSP_ERROR);
+            responseDTO.setMessage("Error");
+            responseDTO.setContent(null);
+            return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Mark as Shipped
+    @PutMapping(value = "/markAsShipped/{orderId}")
+    public ResponseEntity<ResponseDTO> markAsShipped(@PathVariable Integer orderId) {
+        try {
+            String res = orderService.markAsShipped(orderId);
+            if (res.equals(VarList.RSP_SUCCESS)) {
+                responseDTO.setCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Order marked as shipped and email sent");
+                responseDTO.setContent(null);
+                return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+            } else {
+                responseDTO.setCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("Order ID not found");
+                responseDTO.setContent(null);
+                return new ResponseEntity<>(responseDTO, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception ex) {
+            responseDTO.setCode(VarList.RSP_ERROR);
+            responseDTO.setMessage("Error");
+            responseDTO.setContent(null);
+            return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

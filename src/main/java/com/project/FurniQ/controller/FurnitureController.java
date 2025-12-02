@@ -32,7 +32,6 @@ public class FurnitureController {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             FurnitureDTO furnitureDTO = objectMapper.readValue(furnitureData, FurnitureDTO.class);
-
             String res = furnitureService.saveNewfurniture(furnitureDTO, file);
 
             if (res.equals(VarList.RSP_SUCCESS)) {
@@ -126,7 +125,6 @@ public class FurnitureController {
         }
     }
 
-    // FIXED: Added slash "/"
     @DeleteMapping(value = "/deleteFurniture")
     public ResponseEntity<ResponseDTO> deleteFurniture(@RequestParam Integer id) {
         ResponseDTO responseDTO = new ResponseDTO();

@@ -26,10 +26,7 @@ public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
     private final ResponseDTO responseDTO;
-
-    // --- ADD THIS INJECTION ---
     private final EmailService emailService;
-    // --- END ---
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
@@ -139,6 +136,31 @@ public class UserController {
             responseDTO.setMessage(ex.getMessage());
             responseDTO.setContent(null);
             return new ResponseEntity(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @GetMapping("/getUser/{id}")
+    public ResponseEntity getUser(@PathVariable("id") Integer userId) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            userDTO userDTO = userService.getUserById(userId);
+            if (userDTO != null) {
+                responseDTO.setCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Success");
+                responseDTO.setContent(userDTO);
+                return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
+            } else {
+                responseDTO.setCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("User not found");
+                responseDTO.setContent(null);
+                return new ResponseEntity<>(responseDTO, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception ex) {
+            responseDTO.setCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(ex.getMessage());
+            responseDTO.setContent(null);
+            return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

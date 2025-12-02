@@ -40,9 +40,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/homedeco/**").permitAll() // FIXED: Allows all requests to /api/v1/homedeco/...
 
                         // Keeping other permitAll requests
-                        .requestMatchers("/api/v1/auth/getAllUsers").permitAll()
-                        .requestMatchers("/api/v1/auth/updateUserDetails").permitAll()
-                        .requestMatchers("/api/v1/auth/sendEmail").permitAll()
+//                        .requestMatchers("/api/v1/auth/getAllUsers").permitAll()
+//                        .requestMatchers("/api/v1/auth/updateUserDetails").permitAll()
+//                        .requestMatchers("/api/v1/auth/sendEmail").permitAll()
+                        .requestMatchers("/api/v1/auth/**").permitAll()
 
                         .anyRequest().authenticated()
                 )
