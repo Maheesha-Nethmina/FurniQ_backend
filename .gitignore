@@ -34,6 +34,7 @@ build/
 
 # Environment files
 application.properties
+CloudinaryConfig
 application.yml
 *.properties
 *.yml
