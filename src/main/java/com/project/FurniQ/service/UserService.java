@@ -56,9 +56,9 @@ public class UserService implements UserDetailsService {
             );
         } catch (Exception e) {
             // Log the error but DO NOT stop the registration process
-            System.out.println("⚠️ WARNING: Email could not be sent due to network restriction.");
-            System.out.println("👉 Error: " + e.getMessage());
-            System.out.println("✅ User registered successfully anyway.");
+            System.out.println("WARNING: Email could not be sent due to network restriction.");
+            System.out.println("Error: " + e.getMessage());
+            System.out.println("User registered successfully anyway.");
         }
 
         return savedUser;
@@ -112,6 +112,25 @@ public class UserService implements UserDetailsService {
             return VarList.RSP_SUCCESS;
         } else {
             return VarList.RSP_NO_DATA_FOUND;
+        }
+    }
+
+    // getUserById
+    public userDTO getUserById(Integer userId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            userDTO dto = new userDTO();
+            dto.setId(user.getId());
+            dto.setUsername(user.getUsername());
+            dto.setEmail(user.getEmail());
+            dto.setMobileNumber(user.getMobileNumber());
+            dto.setRole(user.getRole());
+
+            return dto;
+        } else {
+            return null;
         }
     }
 }
