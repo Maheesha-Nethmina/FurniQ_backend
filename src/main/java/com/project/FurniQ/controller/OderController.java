@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.project.FurniQ.dto.CheckoutRequestDTO;
 
 import java.util.List;
 
@@ -142,6 +143,34 @@ public class OderController {
         } catch (Exception ex) {
             responseDTO.setCode(VarList.RSP_ERROR);
             responseDTO.setMessage("Error fetching data");
+            responseDTO.setContent(null);
+            return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping(value = "/checkout")
+    public ResponseEntity<ResponseDTO> checkoutCart(@RequestBody CheckoutRequestDTO request) {
+        try {
+            String res = orderService.checkoutCart(request);
+            if (res.equals(VarList.RSP_SUCCESS)) {
+                responseDTO.setCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Order placed successfully!");
+                responseDTO.setContent(null);
+                return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+            } else if (res.equals("CART_EMPTY")) {
+                responseDTO.setCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("Cart is empty");
+                responseDTO.setContent(null);
+                return new ResponseEntity<>(responseDTO, HttpStatus.BAD_REQUEST);
+            } else {
+                responseDTO.setCode(VarList.RSP_FAIL);
+                responseDTO.setMessage("Failed to place order");
+                responseDTO.setContent(null);
+                return new ResponseEntity<>(responseDTO, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception ex) {
+            responseDTO.setCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(ex.getMessage());
             responseDTO.setContent(null);
             return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
         }
