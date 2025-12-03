@@ -20,4 +20,7 @@ public class OderDTO {
     private String address;
     private String mobileNumber;
     private String email;
+    private String OderStatus;
+    private String PaymentStatus;
+
 }

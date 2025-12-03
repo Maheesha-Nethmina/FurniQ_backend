@@ -28,5 +28,7 @@ public class Oder {
     @Column(length = 10)
     private String mobileNumber;
     private String email;
+    private String OderStatus;
+    private String PaymentStatus;
 
 }

@@ -9,9 +9,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration; // Added Import
-import org.springframework.web.cors.CorsConfigurationSource; // Added Import
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource; // Added Import
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,8 +36,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
 
                         // Allowing Furniture/Homedeco endpoints for public access (as per your current setup)
-                        .requestMatchers("/api/v1/furniture/**").permitAll() // FIXED: Allows all requests to /api/v1/furniture/...
-                        .requestMatchers("/api/v1/homedeco/**").permitAll() // FIXED: Allows all requests to /api/v1/homedeco/...
+                        .requestMatchers("/api/v1/furniture/**").permitAll()
+                        .requestMatchers("/api/v1/homedeco/**").permitAll()
 
                         // Keeping other permitAll requests
 //                        .requestMatchers("/api/v1/auth/getAllUsers").permitAll()
