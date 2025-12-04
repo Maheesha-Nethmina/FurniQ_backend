@@ -174,7 +174,7 @@ public class OderService {
     }
 
     //check out in cart
-    
+
     public String checkoutCart(CheckoutRequestDTO request) {
         // 1. Get all cart items for this user
         List<Cart> cartItems = cartRepository.findByUserId(request.getUserId());
