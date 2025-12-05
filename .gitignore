@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Application Secrets ###
+# IGNORE the actual application properties file containing secrets
+application.properties
