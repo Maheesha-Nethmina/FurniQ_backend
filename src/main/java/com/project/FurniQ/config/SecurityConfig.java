@@ -16,6 +16,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
+
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -35,14 +37,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
 
-                        // Allowing Furniture/Homedeco endpoints for public access (as per your current setup)
                         .requestMatchers("/api/v1/furniture/**").permitAll()
                         .requestMatchers("/api/v1/homedeco/**").permitAll()
 
-                        // Keeping other permitAll requests
-//                        .requestMatchers("/api/v1/auth/getAllUsers").permitAll()
-//                        .requestMatchers("/api/v1/auth/updateUserDetails").permitAll()
-//                        .requestMatchers("/api/v1/auth/sendEmail").permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("api/v1/order/**").permitAll()
                         .requestMatchers("api/v1/cart/**").permitAll()

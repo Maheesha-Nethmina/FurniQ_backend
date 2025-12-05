@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/payment")
 @CrossOrigin(origins = "*")
 public class PaymentController {
-
+//payment controller
     @Value("${stripe.api.key}")
     private String stripeApiKey;
 
