@@ -64,7 +64,7 @@ public class SecurityConfig {
                 "http://localhost:5173",
                 "http://localhost:3000",
                 "https://furniq-backend-htuc.onrender.com",
-                "https://furniqfurniture-qnh0.onrender.com"
+                "https://furniqfurniture.onrender.com"
         ));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
