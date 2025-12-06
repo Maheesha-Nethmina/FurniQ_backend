@@ -63,8 +63,8 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:5173",
                 "http://localhost:3000",
-                "https://furniq-backend-htuc.onrender.com" // Allow backend to talk to itself (sometimes needed)
-                // Add your frontend URL here later: "https://furniq-frontend.onrender.com"
+                "https://furniq-backend-htuc.onrender.com",
+                "https://furniq-forntend-qnh0.onrender.com"
         ));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
