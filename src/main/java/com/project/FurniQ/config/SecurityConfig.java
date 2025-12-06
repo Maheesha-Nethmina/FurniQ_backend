@@ -16,8 +16,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
-
-
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -28,23 +26,27 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-
-                // FIXED: Explicitly set CORS configuration to allow cross-origin requests
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
                 .authorizeHttpRequests(auth -> auth
+                        // 1. Allow Public Endpoints (Note the leading '/')
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/furniture/**").permitAll()
+                        .requestMatchers("/api/v1/homedeco/**").permitAll()
+                        .requestMatchers("/api/v1/order/**").permitAll()   // FIXED: Added '/'
+                        .requestMatchers("/api/v1/cart/**").permitAll()    // FIXED: Added '/'
+                        .requestMatchers("/api/v1/payment/**").permitAll() // FIXED: Added '/'
+
+                        // 2. Allow Swagger/API Docs (Optional, but helpful if you use it)
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+
+                        // 3. Allow a simple "Health Check" on the root URL
+                        .requestMatchers("/").permitAll()
+
+                        // 4. Role-Based Access
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
 
-                        .requestMatchers("/api/v1/furniture/**").permitAll()
-                        .requestMatchers("/api/v1/homedeco/**").permitAll()
-
-                        .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("api/v1/order/**").permitAll()
-                        .requestMatchers("api/v1/cart/**").permitAll()
-                        .requestMatchers("api/v1/payment/**").permitAll()
-
+                        // 5. Block everything else
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -52,21 +54,21 @@ public class SecurityConfig {
                 .build();
     }
 
-    // ADDED: Bean to configure CORS policies globally
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Allow your frontend origins (React defaults)
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000"));
+        // FIXED: Allow Localhost AND your Render Frontend
+        // Note: You must add your React Render URL here once you deploy it!
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:5173",
+                "http://localhost:3000",
+                "https://furniq-backend-htuc.onrender.com" // Allow backend to talk to itself (sometimes needed)
+                // Add your frontend URL here later: "https://furniq-frontend.onrender.com"
+        ));
 
-        // Allow all required HTTP methods
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-
-        // Allow all headers (Content-Type, Authorization, etc.)
         configuration.setAllowedHeaders(List.of("*"));
-
-        // Allow credentials (for cookies, JWTs, etc.)
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
