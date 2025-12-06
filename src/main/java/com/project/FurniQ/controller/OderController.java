@@ -21,11 +21,12 @@ public class OderController {
     private OderService orderService;
 
     @Autowired
-    private ResponseDTO responseDTO;
+//    private ResponseDTO responseDTO;
 
     // SaveNew  Order
     @PostMapping(value = "/saveNewOrder")
     public ResponseEntity<ResponseDTO> saveNewOrder(@RequestBody OderDTO oderDTO) {
+        ResponseDTO responseDTO = new ResponseDTO();
         try {
             String res = orderService.saveNewOrder(oderDTO);
 
@@ -60,6 +61,7 @@ public class OderController {
     //Get All Orders
     @GetMapping(value = "/getAllOrders")
     public ResponseEntity<ResponseDTO> getAllOrders() {
+        ResponseDTO responseDTO = new ResponseDTO();
         try {
             List<OderDTO> orderList = orderService.getAllOrders();
             responseDTO.setCode(VarList.RSP_SUCCESS);
@@ -78,6 +80,7 @@ public class OderController {
     //Delete Order (Cancel)
     @DeleteMapping(value = "/deleteOrder/{orderId}")
     public ResponseEntity<ResponseDTO> deleteOrder(@PathVariable Integer orderId) {
+        ResponseDTO responseDTO = new ResponseDTO();
         try {
             String res = orderService.deleteOrder(orderId);
             if (res.equals(VarList.RSP_SUCCESS)) {
@@ -102,6 +105,7 @@ public class OderController {
     //Mark as Shipped
     @PutMapping(value = "/markAsShipped/{orderId}")
     public ResponseEntity<ResponseDTO> markAsShipped(@PathVariable Integer orderId) {
+        ResponseDTO responseDTO = new ResponseDTO();
         try {
             String res = orderService.markAsShipped(orderId);
             if (res.equals(VarList.RSP_SUCCESS)) {
@@ -125,6 +129,7 @@ public class OderController {
 
     @GetMapping(value = "/getOrdersByUserId/{userId}")
     public ResponseEntity<ResponseDTO> getOrdersByUserId(@PathVariable Integer userId) {
+        ResponseDTO responseDTO = new ResponseDTO();
         try {
             // Call the service
             List<OderDTO> userOrders = orderService.getOrdersByUserId(userId);
@@ -150,6 +155,7 @@ public class OderController {
 
     @PostMapping(value = "/checkout")
     public ResponseEntity<ResponseDTO> checkoutCart(@RequestBody CheckoutRequestDTO request) {
+        ResponseDTO responseDTO = new ResponseDTO();
         try {
             String res = orderService.checkoutCart(request);
             if (res.equals(VarList.RSP_SUCCESS)) {
