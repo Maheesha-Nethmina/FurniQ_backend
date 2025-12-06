@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/furniture")
+@RequestMapping("/api/v1/furniture")
 @CrossOrigin // Added for Frontend access
 public class FurnitureController {
 
