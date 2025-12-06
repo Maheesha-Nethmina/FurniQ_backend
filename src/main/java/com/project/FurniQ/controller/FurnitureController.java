@@ -22,6 +22,12 @@ public class FurnitureController {
     @Autowired
     private FurnitureService furnitureService;
 
+    // ADD THIS PART
+    @GetMapping("/all")
+    public ResponseEntity<List<FurnitureDTO>> getAllFurniture() {
+        return ResponseEntity.ok(furnitureService.getAllFurniture());
+    }
+
 
     @PostMapping(value = "/saveNewfurniture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDTO> saveNewfurniture(
